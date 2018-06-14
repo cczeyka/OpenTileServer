@@ -414,10 +414,10 @@ sed -i 's/#\?autovacuum.*/autovacuum = off/' /etc/postgresql/${PG_VER}/main/post
  
 systemctl restart postgresql
  
-if [ $(grep -c 'kernel.shmmax=268435456' /etc/sysctl.conf) -eq 0 ]; then
+if [ $(grep -c 'kernel.shmmax=536870912' /etc/sysctl.conf) -eq 0 ]; then
 	echo '# Increase kernel shared memory segments - needed for large databases
-kernel.shmmax=268435456' >> /etc/sysctl.conf
-	sysctl -w kernel.shmmax=268435456
+kernel.shmmax=536870912' >> /etc/sysctl.conf
+	sysctl -w kernel.shmmax=536870912
 fi
  
 #13. Loading data into your server
@@ -439,7 +439,7 @@ fi
 #Turn on autovacuum and fsync during load of PBF
 sed -i.save 's/#\?fsync.*/fsync = on/' /etc/postgresql/${PG_VER}/main/postgresql.conf
 sed -i.save 's/#\?autovacuum.*/autovacuum = on/' /etc/postgresql/${PG_VER}/main/postgresql.conf
- 
+cat
 ldconfig
 enable_osm_updates
  
