@@ -407,7 +407,25 @@ fi
 sed -i 's/#\?shared_buffers.*/shared_buffers = 128MB/' /etc/postgresql/${PG_VER}/main/postgresql.conf
 sed -i 's/#\?checkpoint_segments.*/checkpoint_segments = 20/' /etc/postgresql/${PG_VER}/main/postgresql.conf
 sed -i 's/#\?maintenance_work_mem.*/maintenance_work_mem = 256MB/' /etc/postgresql/${PG_VER}/main/postgresql.conf
- 
+
+cat >> /etc/postgresql/${PG_VER}/main/postgresql.conf <<CMD_EOF
+shared_buffers = 14GB
+work_mem = 512MB
+maintenance_work_mem = 1GB
+
+effective_io_concurrency = 500
+max_worker_processes = 8
+
+checkpoint_timeout = 1h
+max_wal_size = 5GB
+min_wal_size = 1GB
+checkpoint_completion_target = 0.9
+
+random_page_cost = 1.1
+effective_cache_size = 22GB
+
+CMD_EOF
+
 #Turn off autovacuum and fsync during load of PBF
 sed -i 's/#\?fsync.*/fsync = off/' /etc/postgresql/${PG_VER}/main/postgresql.conf
 sed -i 's/#\?autovacuum.*/autovacuum = off/' /etc/postgresql/${PG_VER}/main/postgresql.conf
@@ -435,7 +453,14 @@ sudo -u ${OSM_USER} osm2pgsql ${osm2pgsql_OPTS} -C ${C_MEM} ${PBF_FILE}
 if [ $? -eq 0 ]; then	#If import went good
 	rm -rf ${PBF_FILE}
 fi
- 
+
+
+echo "Create oh so many indexes..."
+
+cat osm_indexes.sql | psql -U postgres -d gis
+
+echo "Put Postgres back to normal work mode..."
+
 #Turn on autovacuum and fsync during load of PBF
 sed -i.save 's/#\?fsync.*/fsync = on/' /etc/postgresql/${PG_VER}/main/postgresql.conf
 sed -i.save 's/#\?autovacuum.*/autovacuum = on/' /etc/postgresql/${PG_VER}/main/postgresql.conf
