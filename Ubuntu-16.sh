@@ -20,7 +20,7 @@ OSM_DB='gis';				#osm database name
 VHOST=$(hostname -f)
  
 NP=$(grep -c 'model name' /proc/cpuinfo)
-osm2pgsql_OPTS="--slim -d ${OSM_DB} --number-processes ${NP} --hstore"
+osm2pgsql_OPTS="--slim -d ${OSM_DB} --number-processes ${NP} --hstore --disable-parallel-indexing"
  
 #Check input parameters
 if [ -z "${PBF_URL}" -o \
