@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #Version: 0.3.17
 #For use on clean Ubuntu 14 only!!!
-#MapFig, Inc
+#Cited, Inc. Wilmington, Delaware
 #Usage: ./opentileserver.sh [web|ssl] [bright|carto] [pbf_url]"
 #Example for Delaware
 # ./opentileserver.sh web carto http://download.geofabrik.de/north-america/us/delaware-latest.osm.pbf
@@ -106,12 +106,12 @@ function style_osm_carto(){
 	apt-get -y install ttf-dejavu fonts-droid ttf-unifont fonts-sipa-arundina fonts-sil-padauk fonts-khmeros ttf-indic-fonts-core fonts-taml-tscu ttf-kannada-fonts
  
 	cd /usr/local/share/maps/style
-	if [ ! -d openstreetmap-carto-3.0.x ]; then
-		wget https://github.com/gravitystorm/openstreetmap-carto/archive/v3.0.x.zip
-		unzip v3.0.x.zip
-		rm v3.0.x.zip
+	if [ ! -d openstreetmap-carto-3.0.1 ]; then
+		wget https://github.com/gravitystorm/openstreetmap-carto/archive/v3.0.1.zip
+		unzip v3.0.1.zip
+		rm v3.0.1.zip
 	fi
-	cd openstreetmap-carto-3.0.x/
+	cd openstreetmap-carto-3.0.1/
  
 	if [ $(find data/ -type f -name "*.shp" 2>/dev/null | wc -l) -ne 6 ]; then
 		./scripts/get-shapefiles.py
@@ -120,8 +120,8 @@ function style_osm_carto(){
  
 	/usr/local/lib/node_modules/carto/bin/carto project.mml >osm-carto.xml
  
-	osm2pgsql_OPTS+=' --style /usr/local/share/maps/style/openstreetmap-carto-3.0.x/openstreetmap-carto.style'
-	OSM_STYLE_XML='/usr/local/share/maps/style/openstreetmap-carto-3.0.x/osm-carto.xml'
+	osm2pgsql_OPTS+=' --style /usr/local/share/maps/style/openstreetmap-carto-3.0.1/openstreetmap-carto.style'
+	OSM_STYLE_XML='/usr/local/share/maps/style/openstreetmap-carto-3.0.1/osm-carto.xml'
 }
  
 function enable_osm_updates(){
@@ -219,7 +219,7 @@ apt-get install -y osm2pgsql python-mapnik2 libmapnik2.2 mapnik-utils libmapnik2
 mkdir -p ~/src
 if [ -z "$(which renderd)" ]; then	#if mapnik is not installed
 	cd ~/src
-	git clone git://github.com/openstreetmap/mod_tile.git
+	git clone https://github.com/openstreetmap/mod_tile.git
 	if [ ! -d mod_tile ]; then "Error: Failed to download mod_tile"; exit 1; fi
  
 	cd mod_tile
